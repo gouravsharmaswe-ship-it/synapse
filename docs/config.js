@@ -1,4 +1,4 @@
-// Synapse Client Configuration for GitHub Pages Deployment
+// SyncSpace Client Configuration for GitHub Pages Deployment
 // If a custom server parameter is passed in the URL (?server=wss://...), it takes precedence.
 // Otherwise, it connects to the production Render backend.
 (function() {
@@ -7,6 +7,6 @@
   if (customServer) {
     window.SYNCSPACE_URL = customServer;
   } else if (!window.SYNCSPACE_URL) {
-    window.SYNCSPACE_URL = "wss://YOUR-SYNAPSE-SERVICE.onrender.com";
+    window.SYNCSPACE_URL = "wss://syncspace-backend.onrender.com";
   }
 })();

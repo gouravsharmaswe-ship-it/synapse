@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: synapse-multiplayer
+    name: syncspace-server
     runtime: node
     plan: free
     buildCommand: npm install

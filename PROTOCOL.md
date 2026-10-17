@@ -1,6 +1,6 @@
-# Synapse WebSocket Protocol Specification
+# SyncSpace WebSocket Protocol Specification
 
-Synapse uses a JSON-based real-time protocol over standard WebSockets. All frames are UTF-8 encoded JSON text frames.
+SyncSpace uses a JSON-based real-time protocol over standard WebSockets. All frames are UTF-8 encoded JSON text frames.
 
 ---
 
