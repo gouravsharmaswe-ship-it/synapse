@@ -1,0 +1,23 @@
+{
+  "name": "synapse",
+  "version": "1.0.0",
+  "description": "Multiplayer in 10 Lines: real-time shared state, live cursors, and room presence",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "test": "node test/test.js"
+  },
+  "keywords": [
+    "multiplayer",
+    "websockets",
+    "real-time",
+    "presence",
+    "live-cursors",
+    "sync"
+  ],
+  "author": "Synapse Team",
+  "license": "MIT",
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}
