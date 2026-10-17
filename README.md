@@ -2,9 +2,9 @@
 
 Synapse is a tiny real-time JavaScript library for adding rooms, shared state, live cursors, and presence to a webpage. It uses a small Node.js WebSocket server and has no frontend framework.
 
-**Repository:** [gouravsharmaswe-ship-it/synapse-multiplayer](https://github.com/gouravsharmaswe-ship-it/synapse-multiplayer)
+The demo opens with a bright, patterned room entrance. Visitors enter a display name and room code before joining; shared room links prefill the code.
 
-Deploy this repository using the steps below to create its public demo.
+Create a public GitHub repository named `synapse-multiplayer` and upload the contents of this folder to publish the project.
 
 ## Add Synapse to a webpage
 

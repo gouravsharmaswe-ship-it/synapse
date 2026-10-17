@@ -12,6 +12,26 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
   <style>
+    #entry-screen { position: fixed; inset: 0; z-index: 20000; display: grid; place-items: center; overflow: auto; padding: 32px 18px; color: #17233b; background-color: #f4f8ff; background-image: radial-gradient(circle at 12% 18%, rgba(91, 131, 255, .17) 0 2px, transparent 3px), radial-gradient(circle at 82% 78%, rgba(27, 190, 163, .16) 0 2px, transparent 3px), repeating-linear-gradient(135deg, rgba(89, 121, 193, .055) 0 1px, transparent 1px 22px), radial-gradient(ellipse at 14% 12%, #e5edff 0, transparent 34%), radial-gradient(ellipse at 88% 84%, #ddf8ef 0, transparent 35%); background-size: 30px 30px, 34px 34px, auto, auto, auto; }
+    #entry-screen:before, #entry-screen:after { content: ""; position: fixed; border-radius: 50%; pointer-events: none; }
+    #entry-screen:before { width: 290px; height: 290px; top: -105px; right: 9%; border: 1px solid rgba(92, 127, 214, .18); box-shadow: 0 0 0 22px rgba(255,255,255,.28), 0 0 0 52px rgba(255,255,255,.2); }
+    #entry-screen:after { width: 220px; height: 220px; bottom: -92px; left: 8%; border: 1px solid rgba(34, 178, 149, .2); box-shadow: 0 0 0 20px rgba(255,255,255,.25), 0 0 0 48px rgba(255,255,255,.18); }
+    .entry-card { position: relative; z-index: 1; width: min(100%, 480px); padding: 38px; border: 1px solid rgba(255,255,255,.9); border-radius: 24px; background: rgba(255,255,255,.88); box-shadow: 0 24px 70px rgba(40, 65, 117, .14), 0 3px 10px rgba(40,65,117,.05); backdrop-filter: blur(16px); }
+    .entry-brand { display: flex; align-items: center; gap: 11px; color: #17233b; font-weight: 800; letter-spacing: -.04em; font-size: 1.22rem; }
+    .entry-brand-mark { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 14px; color: white; background: linear-gradient(145deg,#5879ef,#39b9a2); box-shadow: 0 8px 18px rgba(77,128,210,.23); }
+    .entry-kicker { margin-top: 30px; color: #5571b5; font-size: .72rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+    .entry-card h1 { margin-top: 9px; color: #17233b; font-size: clamp(1.8rem,5vw,2.35rem); letter-spacing: -.055em; line-height: 1.1; }
+    .entry-copy { margin-top: 10px; color: #68758c; font-size: .96rem; line-height: 1.6; }
+    .entry-fields { display: grid; gap: 17px; margin-top: 28px; }
+    .entry-fields label { display: grid; gap: 8px; color: #34415a; font-size: .82rem; font-weight: 700; }
+    .entry-fields input { width: 100%; min-height: 48px; padding: 0 14px; border: 1px solid #dce4f1; border-radius: 11px; outline: none; background: #fbfcff; color: #17233b; font: inherit; transition: border-color .18s, box-shadow .18s; }
+    .entry-fields input:focus { border-color: #6986ee; box-shadow: 0 0 0 4px rgba(105,134,238,.14); }
+    #enter-room-btn { display: flex; align-items: center; justify-content: center; gap: 9px; min-height: 50px; margin-top: 7px; border: 0; border-radius: 12px; color: #fff; background: linear-gradient(100deg,#526fe4,#538be9 58%,#3bb69e); box-shadow: 0 10px 20px rgba(82,111,228,.2); font: inherit; font-weight: 750; cursor: pointer; transition: transform .18s, box-shadow .18s; }
+    #enter-room-btn:hover { transform: translateY(-1px); box-shadow: 0 14px 24px rgba(82,111,228,.26); }
+    #entry-error { min-height: 1.1em; color: #c24150; font-size: .8rem; }
+    .entry-foot { margin-top: 22px; color: #8792a5; font-size: .76rem; text-align: center; }
+    body.in-room #entry-screen { display: none; }
+    @media (max-width: 520px) { .entry-card { padding: 28px 23px; } }
     :root {
       --bg-base: #0a0e17;
       --bg-card: rgba(18, 26, 43, 0.75);
@@ -842,6 +862,22 @@
 </head>
 <body>
 
+  <section id="entry-screen" aria-labelledby="entry-title">
+    <form class="entry-card" id="entry-form">
+      <div class="entry-brand"><span class="entry-brand-mark" aria-hidden="true">✳</span> Synapse</div>
+      <p class="entry-kicker">A space to think together</p>
+      <h1 id="entry-title">Your room is ready.</h1>
+      <p class="entry-copy">Add your name, check the room code, then step into your shared workspace.</p>
+      <div class="entry-fields">
+        <label for="entry-name">Your name<input id="entry-name" maxlength="24" autocomplete="name" placeholder="e.g. Alex Morgan" required></label>
+        <label for="entry-room">Room code<input id="entry-room" maxlength="32" autocomplete="off" autocapitalize="none" spellcheck="false" required></label>
+        <button id="enter-room-btn" type="submit">Enter room <span aria-hidden="true">→</span></button>
+        <p id="entry-error" role="alert" aria-live="polite"></p>
+      </div>
+      <p class="entry-foot">Anyone with this room code can join your session.</p>
+    </form>
+  </section>
+
   <!-- Ambient background glow reacting to room color -->
   <div class="ambient-glow" id="ambientGlow"></div>
 
@@ -1053,10 +1089,8 @@ room.<span class="f">set</span>(<span class="s">'score'</span>, 42);</code></pre
       var roomId = params.get('room');
       if (!roomId || !/^[A-Za-z0-9_-]{1,32}$/.test(roomId)) {
         roomId = Synapse.randomRoom();
-        var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?room=' + roomId;
-        window.history.replaceState({ path: newUrl }, '', newUrl);
       }
-      $('roomDisplay').textContent = roomId;
+      $('entry-room').value = roomId;
 
       // 2. Resolve WebSocket Server URL
       var wsUrl = window.SYNCSPACE_URL;
@@ -1066,11 +1100,15 @@ room.<span class="f">set</span>(<span class="s">'score'</span>, 42);</code></pre
       }
 
       // 3. Resolve user identity
-      var myName = localStorage.getItem('synapse-user-name') || localStorage.getItem('synapse-user-name') || ('Hacker-' + Math.floor(Math.random() * 900 + 100));
-      $('nameInput').value = myName;
+      var myName = localStorage.getItem('synapse-user-name') || ('Guest-' + Math.floor(Math.random() * 900 + 100));
+      $('entry-name').value = myName;
+      var room;
 
       // 4. Connect to Synapse room
-      var room = Synapse.connect({
+      function enterRoom() {
+      $('roomDisplay').textContent = roomId;
+      $('nameInput').value = myName;
+      room = Synapse.connect({
         url: wsUrl,
         room: roomId,
         name: myName
@@ -1470,6 +1508,28 @@ room.<span class="f">set</span>(<span class="s">'score'</span>, 42);</code></pre
       }
 
       renderState();
+      }
+
+      $('entry-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+        var code = $('entry-room').value.trim();
+        var name = $('entry-name').value.trim();
+        if (!/^[A-Za-z0-9_-]{1,32}$/.test(code)) {
+          $('entry-error').textContent = 'Use 1–32 letters, numbers, hyphens or underscores for the room code.';
+          $('entry-room').focus();
+          return;
+        }
+        if (!name) { $('entry-error').textContent = 'Add the name your teammates will see.'; $('entry-name').focus(); return; }
+        roomId = code;
+        myName = name;
+        localStorage.setItem('synapse-user-name', myName);
+        var nextUrl = new URL(window.location.href);
+        nextUrl.searchParams.set('room', roomId);
+        window.history.replaceState({}, '', nextUrl);
+        $('entry-error').textContent = '';
+        document.body.classList.add('in-room');
+        enterRoom();
+      });
     })();
   </script>
 </body>
